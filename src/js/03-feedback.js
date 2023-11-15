@@ -7,8 +7,8 @@ const form = document.querySelector(".feedback-form");
 
 const feedback = JSON.parse(localStorage.getItem(common.LS_FEEDBACK)) ?? {};
 if (Object.keys(feedback).length) {
-    form[0].value = feedback.email;
-    form[1].value = feedback.message;
+    form[0].value = feedback.email ?? "";
+    form[1].value = feedback.message ?? "";
 }
 
 form.addEventListener("input", throttle(handlerInput, 500, {
@@ -19,10 +19,17 @@ form[2].addEventListener("click", onClick)
 
 function onClick(evt) {
     evt.preventDefault();
-
-    console.log(feedback);
-    localStorage.removeItem(common.LS_FEEDBACK);
-    form.reset();
+    
+    if (feedback.email && feedback.message) {
+        console.log(feedback);
+        localStorage.removeItem(common.LS_FEEDBACK);
+        feedback.email = "";
+        feedback.message = "";
+        form.reset();
+        return;
+    }
+    
+    alert("Заповніть усі поля!")
 }
 
 function handlerInput(evt) {
